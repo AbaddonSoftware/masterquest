@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import BoardCard from "./BoardCard";
+import MoveControls from "./MoveControls";
 
 type BoardColumnProps = {
   id: number;
@@ -58,6 +59,20 @@ export default function BoardColumn({
   const showReorderButtons = Boolean(onMoveLeft || onMoveRight);
   const showHeaderActions = showMenu || showReorderButtons;
   const reorderDisabled = isReordering;
+  const columnIcons = {
+    previous: (
+      <span className="inline-block">
+        <span className="hidden sm:inline">←</span>
+        <span className="inline sm:hidden">↑</span>
+      </span>
+    ),
+    next: (
+      <span className="inline-block">
+        <span className="hidden sm:inline">→</span>
+        <span className="inline sm:hidden">↓</span>
+      </span>
+    ),
+  };
 
   return (
     <div className="flex w-full flex-shrink-0 flex-col gap-3 rounded-2xl border border-amber-200 bg-white/70 p-4 shadow-md backdrop-blur sm:w-full md:w-52 lg:w-56 xl:w-60">
@@ -85,27 +100,17 @@ export default function BoardColumn({
         {showHeaderActions && (
           <div className="flex items-start gap-2">
             {showReorderButtons && (
-              <div className="flex items-center rounded-full border border-amber-200 bg-white/90 shadow-sm">
-                <button
-                  type="button"
-                  onClick={() => onMoveLeft?.()}
-                  disabled={!onMoveLeft || reorderDisabled}
-                  aria-label="Move column left"
-                  className="px-2 py-1 text-lg leading-none text-stone-600 transition hover:text-stone-900 disabled:cursor-not-allowed disabled:text-stone-300"
-                >
-                  ←
-                </button>
-                <div className="h-5 w-px bg-amber-200" />
-                <button
-                  type="button"
-                  onClick={() => onMoveRight?.()}
-                  disabled={!onMoveRight || reorderDisabled}
-                  aria-label="Move column right"
-                  className="px-2 py-1 text-lg leading-none text-stone-600 transition hover:text-stone-900 disabled:cursor-not-allowed disabled:text-stone-300"
-                >
-                  →
-                </button>
-              </div>
+              <MoveControls
+                onPrevious={onMoveLeft}
+                onNext={onMoveRight}
+                previousLabel="Move column left"
+                nextLabel="Move column right"
+                previousIcon={columnIcons.previous}
+                nextIcon={columnIcons.next}
+                disabled={reorderDisabled}
+                orientation="horizontal"
+                className="bg-white/90"
+              />
             )}
             {showMenu && (
               <div className="relative" ref={menuRef}>
